@@ -1,0 +1,44 @@
+<project name="OnlineWebservice" default="test">
+	
+	<description>
+		TK1 - Programming 2
+	</description>	
+
+    <target name="clean">
+    	<delete failonerror="false" dir="bin" />
+    	<mkdir dir="bin" />  
+    </target> 
+
+    <target name="compile" depends="clean">
+    	<!--compile the .java files -->       	
+        <javac includeantruntime="true" srcdir="src" destdir="bin" includes="**/*.java" verbose="true"  >
+         <classpath>          
+           <pathelement path="lib/jersey-bundle-1.18.2.jar"/>
+         </classpath>
+        </javac>  <!-- verbose="true"-->
+    </target>
+
+    <target name="jar" depends="compile">    	
+    	<mkdir dir="jar" />
+    	<!-- generate service jar -->
+    	<jar destfile="jar/ServerStarter.jar" basedir="bin" >    	
+    	    <archives>
+    	        <zips>
+    	            <fileset dir="lib" includes="**/*.jar"> </fileset>
+    	        </zips>    	        
+    	    </archives>   
+    	       <manifest>
+    	            <attribute name="Main-Class" value="com.onlineshop.service.ServerStarter" /> 
+    	       </manifest> 
+    	 </jar>    	
+    </target>
+
+    <target name="run" depends="jar">    	
+    		<!-- start REST and SOAP service -->    		        	   
+    	    <java fork="true" failonerror="yes" classpath="jar/ServerStarter.jar" classname="com.onlineshop.service.ServerStarter"> 	    	
+    	    </java>    		       	  
+     </target>
+		
+     <target name="test" depends="run">
+     </target>
+ </project>

@@ -1,0 +1,59 @@
+<project name="OnlineBuyer" default="test">
+	
+	<description>
+		TK1 - Programming 2
+	</description>	
+
+    <target name="clean">
+    	<delete failonerror="false" dir="bin" />
+    	<mkdir dir="bin" />  
+    </target> 
+
+    <target name="compile" depends="clean">
+    	<!--compile the .java files -->       	
+        <javac includeantruntime="true" srcdir="src" destdir="bin" includes="**/*.java" verbose="true"  >
+         <classpath>        
+           <pathelement path="lib/jersey-bundle-1.18.2.jar"/>           
+         </classpath>
+        </javac>  <!-- verbose="true"-->
+    </target>
+
+    <target name="jar" depends="compile">    	
+    	<mkdir dir="jar" />
+    	<!-- generate service jar -->
+    	<jar destfile="jar/RESTclientScreen.jar" basedir="bin" >
+    	    <archives>
+    	        <zips>
+    	            <fileset dir="lib" includes="**/*.jar"> </fileset>
+    	        </zips>    	        
+    	    </archives>   
+    	       <manifest>
+    	            <attribute name="Main-Class" value="com.onlinebuyer.client.RESTclientScreen" />    	                	         	
+    	        </manifest>
+    	</jar>
+    	<jar destfile="jar/SOAPclientScreen.jar" basedir="bin" >    	    	
+    	    <archives>
+    	        <zips>
+    	            <fileset dir="lib" includes="**/*.jar"> </fileset>
+    	        </zips>    	        
+    	    </archives>   
+    	       <manifest>    	            
+    	            <attribute name="Main-Class" value="com.onlinebuyer.client.SOAPclientScreen" />    	         	
+    	        </manifest> 
+    	 </jar>    	
+    </target>
+
+    <target name="run" depends="jar">
+    	<parallel>
+    		<!-- start REST client -->    		        	   
+    	    <java fork="true" failonerror="yes" classpath="jar/RESTclientScreen.jar" classname="com.onlinebuyer.client.RESTclientScreen"> 	    	
+    	    </java>
+    		<!-- start SOAP client -->
+    	    <java fork="true" failonerror="yes" classpath="jar/SOAPclientScreen.jar" classname="com.onlinebuyer.client.SOAPclientScreen">    	    	
+        	</java>    		
+    	</parallel>   
+     </target>
+		
+     <target name="test" depends="run">
+     </target>
+ </project>
